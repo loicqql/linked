@@ -10,5 +10,9 @@
   "permissions": [
     "activeTab",
     "notifications"
-  ]
+  ],
+  "browser_action": {
+    "default_title": "Linked",
+    "default_popup": "index.html"
+  }
 }

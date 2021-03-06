@@ -12,6 +12,7 @@ socket.on('links', (data) => {
   console.log(data);
 })
 
-function newLink(e) {
-  socket.emit('new link', e);
-}
+const newLink = (e) => socket.emit('new link', e);
+
+
+

@@ -1,0 +1,118 @@
+:root {
+  --main: #FFB4A6;
+  --green: #0f0;
+  --gris: #f2f2f2;
+  --shadow: 0px 0px 5px 0px rgb(216, 216, 216)
+}
+
+* {
+  box-sizing: border-box;
+  transition: 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  width: 300px;
+  padding: 0;
+  margin: 0;
+}
+
+.linked {
+  width: 100%;
+  height: 300px;
+  overflow-y: scroll;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.linked a {
+  width: 85%;
+  text-decoration: none;
+}
+
+.linked .link {
+  box-shadow: var(--shadow);
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0;
+  border-bottom: 2px solid var(--main);
+  cursor: pointer;
+}
+
+.linked .link:first-of-type {
+  margin-top: 1rem;
+}
+
+.linked .link:last-of-type {
+  margin-bottom: 1rem;
+}
+
+
+.linked__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 28px;
+  width: 100%;
+  background-color: var(--main);
+  box-shadow: var(--shadow);
+}
+
+.linked__bottom .socket_status{
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--green);
+}
+
+.linked__bottom .socket_status svg{
+  height: 40%;
+}
+
+.linked__bottom .link{
+  
+}
+
+.linked__bottom .unlink{
+  display: none;
+}
+
+.linked__bottom input{
+  width: 80%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 10px;
+}
+
+.linked__bottom .addTabUrl{
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.linked__bottom .addTabUrl svg{
+  height: 50%;
+}
+
+/* Scrollbar */
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: blue;
+  border-radius: 20px;
+  border: 3px solid var(--main);
+}
