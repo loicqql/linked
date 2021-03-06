@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Linked",
+  "description": "Shared links",
+  "version": "1.0",
+  "background": {
+    "persistent": true,
+    "scripts": ["src/socket.io.min.js", "src/app.js"]
+  },
+  "permissions": [
+    "activeTab",
+    "notifications"
+  ]
+}

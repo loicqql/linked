@@ -16,10 +16,12 @@ var firebaseConfig = {
   appId: process.env.F_APPID
 };
 firebase.initializeApp(firebaseConfig);
-
-
+const db = firebase.firestore().collection('links').doc(process.env.ID_DOC);
+const makeID = () => {return Array(4).fill(null).map(() => Math.random().toString(36).substr(2)).join('')};
 
 io.on('connection', (socket) => {
+
+  console.log('a')
   
   socket.emit('ok');
 
@@ -27,6 +29,12 @@ io.on('connection', (socket) => {
     'google.com',
     'lol.com'
   ]);
+
+  socket.on("new link", (data) => {
+    db.set({
+      [makeID()]: data
+    },{merge: true});
+  });
 
 });
 
