@@ -27,12 +27,12 @@ body {
   align-items: center;
 }
 
-.linked a {
+.link {
   width: 85%;
   text-decoration: none;
 }
 
-.linked .link {
+.link  p{
   box-shadow: var(--shadow);
   width: 100%;
   padding: 0.7rem;

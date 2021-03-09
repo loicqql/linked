@@ -17,27 +17,70 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore().collection('links').doc(process.env.ID_DOC);
-const makeID = () => {return Array(4).fill(null).map(() => Math.random().toString(36).substr(2)).join('')};
 
 io.on('connection', (socket) => {
 
-  console.log('a')
-  
+  console.log('a');
+
   socket.emit('ok');
 
-  socket.emit('links', [
-    'google.com',
-    'lol.com'
-  ]);
+  db.get().then((doc) => {
+    if (doc.exists) {
 
-  socket.on("new link", (data) => {
+      socket.emit('links', doc.data());
+
+    } else {
+      console.log("No such document!");
+    }
+  }).catch((error) => {
+    console.log("Error getting document:", error);
+  });
+
+  // StoreLink
+
+  socket.on("storeLink", (data) => {
+
     db.set({
-      [makeID()]: data
-    },{merge: true});
+      [new Date().getTime()]: data
+    }, { merge: true }).then(() => {
+
+      db.get().then((doc) => {
+        if (doc.exists) {
+
+          socket.emit('links', doc.data());
+
+        } else {
+          console.log("No such document!");
+        }
+      }).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+
+    })
+  });
+
+  //DeleteLink
+
+  socket.on("deleteLink", (data) => {
+    db.update({
+      [data]: firebase.firestore.FieldValue.delete()
+    }).then(() => {
+      db.get().then((doc) => {
+        if (doc.exists) {
+
+          socket.emit('links', doc.data());
+
+        } else {
+          console.log("No such document!");
+        }
+      }).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+    })
   });
 
 });
 
 http.listen(process.env.PORT, () => {
-  console.log('listening on *:'+process.env.PORT);
+  console.log('listening on *:' + process.env.PORT);
 });
