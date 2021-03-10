@@ -20,21 +20,11 @@ const db = firebase.firestore().collection('links').doc(process.env.ID_DOC);
 
 io.on('connection', (socket) => {
 
-  console.log('a');
+  console.log('isConnect');
 
   socket.emit('ok');
 
-  db.get().then((doc) => {
-    if (doc.exists) {
-
-      socket.emit('links', doc.data());
-
-    } else {
-      console.log("No such document!");
-    }
-  }).catch((error) => {
-    console.log("Error getting document:", error);
-  });
+  sendLinks(socket);
 
   // StoreLink
 
@@ -43,19 +33,7 @@ io.on('connection', (socket) => {
     db.set({
       [new Date().getTime()]: data
     }, { merge: true }).then(() => {
-
-      db.get().then((doc) => {
-        if (doc.exists) {
-
-          socket.emit('links', doc.data());
-
-        } else {
-          console.log("No such document!");
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
-
+      sendLinks(socket);
     })
   });
 
@@ -65,17 +43,7 @@ io.on('connection', (socket) => {
     db.update({
       [data]: firebase.firestore.FieldValue.delete()
     }).then(() => {
-      db.get().then((doc) => {
-        if (doc.exists) {
-
-          socket.emit('links', doc.data());
-
-        } else {
-          console.log("No such document!");
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
+      sendLinks(socket);
     })
   });
 
@@ -84,3 +52,15 @@ io.on('connection', (socket) => {
 http.listen(process.env.PORT, () => {
   console.log('listening on *:' + process.env.PORT);
 });
+
+function sendLinks(socket) {
+  db.get().then((doc) => {
+    if (doc.exists) {
+      socket.emit('links', doc.data());
+    }else {
+      console.log("No such document!");
+    }
+  }).catch((error) => {
+    console.log("Error getting document:", error);
+  });
+}

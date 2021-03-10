@@ -1,7 +1,7 @@
 :root {
   --main: #FFB4A6;
   --green: #0f0;
-  --gris: #f2f2f2;
+  --red: #f00;
   --shadow: 0px 0px 5px 0px rgb(216, 216, 216)
 }
 
@@ -29,16 +29,29 @@ body {
 
 .link {
   width: 85%;
+  position: relative;
+  margin: 0.5rem 0;
+  box-shadow: var(--shadow);
+  border-bottom: 2px solid var(--main);
+  cursor: pointer;
+}
+
+.link  a{
   text-decoration: none;
 }
 
 .link  p{
-  box-shadow: var(--shadow);
-  width: 100%;
-  padding: 0.7rem;
-  margin: 0.5rem 0;
-  border-bottom: 2px solid var(--main);
-  cursor: pointer;
+  padding: 1rem 0.7rem;
+  margin: 0;
+  width: 85%;
+}
+
+.link span {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  color: var(--main);
 }
 
 .linked .link:first-of-type {
@@ -66,18 +79,27 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--green);
+  background-color: var(--red);
+  cursor: pointer;
 }
 
 .linked__bottom .socket_status svg{
   height: 40%;
 }
 
-.linked__bottom .link{
-  
+.socket_status .co{
+  display: none;
 }
 
-.linked__bottom .unlink{
+.socket_status.connect{
+  background-color: var(--green);
+}
+
+.socket_status.connect .co{
+  display: block;
+}
+
+.socket_status.connect .deco{
   display: none;
 }
 

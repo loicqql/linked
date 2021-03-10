@@ -2,14 +2,24 @@ var socket = io("http://localhost:3000/");
 
 let links = [];
 
+let isConnect = false;
+
 let port;
 
 socket.on('ok', () => {
+  isConnect = true;
+  if(port) {
+    port.postMessage({isConnect: isConnect});
+  }
   console.log('ok');
 });
 
 socket.on("disconnect", (reason) => {
   console.log(reason);
+  isConnect = false;
+  if(port) {
+    port.postMessage({isConnect: isConnect});
+  }
 });
 
 socket.on('links', (data) => {
@@ -32,13 +42,17 @@ chrome.runtime.onConnect.addListener(function(p) {
   port.onMessage.addListener(function(msg) {
     switch(Object.keys(msg)[0]) {
       case 'fetchLinks':
-        port.postMessage({links: links})
-        break
+        port.postMessage({links: links});
+        break;
       case 'storeLink':
         newLink(msg.storeLink);
-        break
+        break;
       case 'deleteLink':
         deleteLink(msg.deleteLink);
+        break;
+      case 'updateStatus':
+        port.postMessage({isConnect: isConnect});
+        break;
     }
   });
 });

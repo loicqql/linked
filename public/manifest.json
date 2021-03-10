@@ -8,7 +8,7 @@
     "scripts": ["src/socket.io.min.js", "src/app.js"]
   },
   "permissions": [
-    "activeTab",
+    "tabs",
     "notifications"
   ],
   "browser_action": {
