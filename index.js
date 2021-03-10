@@ -47,6 +47,12 @@ io.on('connection', (socket) => {
     })
   });
 
+  //updateLinks
+
+  socket.on("updateLinks", () => {
+    sendLinks(socket);
+  });
+
 });
 
 http.listen(process.env.PORT, () => {

@@ -1,14 +1,14 @@
-const onEvent = (selectorCss, event, functionCallback) => {document.querySelectorAll(selectorCss).forEach(el => {el.addEventListener(event, function() {functionCallback(this)})})};
+const onEvent = (selectorCss, event, functionCallback) => { document.querySelectorAll(selectorCss).forEach(el => { el.addEventListener(event, function () { functionCallback(this) }) }) };
 
 let port;
 
 window.addEventListener('DOMContentLoaded', () => {
-  port = chrome.runtime.connect({name: "linked"});
-  port.postMessage({fetchLinks: ""});
-  port.postMessage({updateStatus: ""});
+  port = chrome.runtime.connect({ name: "linked" });
+  port.postMessage({ fetchLinks: "" });
+  port.postMessage({ updateStatus: "" });
 
-  port.onMessage.addListener(function(msg) {
-    switch(Object.keys(msg)[0]) {
+  port.onMessage.addListener(function (msg) {
+    switch (Object.keys(msg)[0]) {
       case 'links':
         displayLinks(msg.links);
       case 'isConnect':
@@ -17,29 +17,30 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   document.querySelector('.linked__input').addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
-      port.postMessage({storeLink: e.target.value});
-      e.target.value = '';
+    if (e.key === 'Enter' && e.target.value != '') {
+      if (e.target.value.startsWith('https://') || e.target.value.startsWith('http://')) {
+        let domain = e.target.value.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
+        port.postMessage({ storeLink: {text: domain, url: e.target.value}});
+        e.target.value = '';
+      }
     }
   });
 
-  onEvent('.link .material-icons', 'click', (e) => {
-    port.postMessage({deleteLink: e.dataset.id});
+  onEvent('.socket_status', 'click', () => {
+    port.postMessage({ updateStatus: '' });
+    port.postMessage({ updateLinks: '' });
   });
 
-  onEvent('.socket_status', 'click', (e) => {
-    port.postMessage({updateStatus: ''});
-    port.postMessage({fetchLinks: ""});
-  });
-
-  onEvent('.addTabUrl', 'click', (e) => {
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
-      if(tabs[0].url) {
-        port.postMessage({storeLink: tabs[0].url});
+  onEvent('.addTabUrl', 'click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (tabs[0].url) {
+        if (tabs[0].url.startsWith('https://') || tabs[0].url.startsWith('http://')) {
+          let domain = tabs[0].url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
+          port.postMessage({ storeLink: {text: domain, url: tabs[0].url} });
+        }
       }
     });
   });
-
 })
 
 function displayLinks(links) {
@@ -50,10 +51,11 @@ function displayLinks(links) {
     let div = document.createElement('div');
     div.setAttribute('class', 'link');
     let a = document.createElement('a');
-    a.setAttribute('href', el.url);
+    a.setAttribute('href', el.link.url);
     a.setAttribute('target', '_blank');
     let p = document.createElement('p');
-    p.textContent = el.url;
+    p.setAttribute('title', el.link.url);
+    p.textContent = el.link.text;
     a.appendChild(p);
     div.appendChild(a);
     let span = document.createElement('span');
@@ -66,12 +68,16 @@ function displayLinks(links) {
 
   });
   linked.scrollTop = linked.scrollHeight;
-} 
+
+  onEvent('.link .material-icons', 'click', (e) => {
+    port.postMessage({ deleteLink: e.dataset.id });
+  });
+}
 
 function displayStatus(e) {
   let el = document.querySelector('.socket_status');
   el.classList.remove('connect');
-  if(e) {
+  if (e) {
     el.classList.add('connect');
   }
 }
