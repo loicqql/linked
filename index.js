@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
 
   socket.emit('ok');
 
-  sendLinks(socket);
+  sendLinks();
 
   // StoreLink
 
@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
     db.set({
       [new Date().getTime()]: data
     }, { merge: true }).then(() => {
-      sendLinks(socket);
+      sendLinks();
     })
   });
 
@@ -43,14 +43,14 @@ io.on('connection', (socket) => {
     db.update({
       [data]: firebase.firestore.FieldValue.delete()
     }).then(() => {
-      sendLinks(socket);
+      sendLinks();
     })
   });
 
   //updateLinks
 
   socket.on("updateLinks", () => {
-    sendLinks(socket);
+    sendLinks();
   });
 
 });
@@ -59,10 +59,10 @@ http.listen(process.env.PORT, () => {
   console.log('listening on *:' + process.env.PORT);
 });
 
-function sendLinks(socket) {
+function sendLinks() {
   db.get().then((doc) => {
     if (doc.exists) {
-      socket.emit('links', doc.data());
+      io.emit('links', doc.data());
     }else {
       console.log("No such document!");
     }
